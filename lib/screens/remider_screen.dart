@@ -246,7 +246,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
                     ),
                     MainButton(
                       size: size,
-                      title: 'Analyse Nutritions',
+                      title: 'Analyse Butterfly',
                       onTap: () {
                         if (imagePath != null) {
                           _analyseNutritions();

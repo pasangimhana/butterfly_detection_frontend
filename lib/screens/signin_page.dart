@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:foodie/screens/signup.dart';
+
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final _formKey = new GlobalKey<FormState>();
+
+  static final _conUserName = TextEditingController();
+  static final _conPassword = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign In'),
+        backgroundColor: Colors.purple,
+        centerTitle: true,
+      ),
+      body: Form(
+        key: _formKey,
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 16.0),
+                  TextFormField(
+                    controller: _conUserName,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email),
+                      hintText: 'User Name (Email)',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    controller: _conPassword,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock),
+                      hintText: 'Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30.0),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.purple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      textStyle: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: () {
+                      // Implement sign-in functionality here
+                    },
+                    child: Text('Sign In'),
+                  ),
+                  SizedBox(height: 30),
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to Register Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                      );
+                    },
+                    child: Text(
+                      "Don't have an account? Register",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 50),
+                 // Image.asset('images/logo2.png', width: 100, height: 100),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
