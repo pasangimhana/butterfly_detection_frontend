@@ -109,6 +109,23 @@ class _NutritionScreenState extends State<NutritionScreen> {
     }
   }
 
+  String getDescription(String butterflyName) {
+    if (butterflyName == 'Common_Indian_Crow') {
+      return 'Adorning the skies of South Asia and Southeast Asia, the Common Indian Crow is a testament to nature’s palette and adaptability.'; // Full description
+    } else if (butterflyName == 'Crimson Rose') {
+      return 'The Crimson Rose,The Crimson Rose, a resplendent butterfly, seamlessly blends the drama of crimson with the depth of black.'; // Full description
+    } else if (butterflyName == 'Common Mormon') {
+      return 'Common Mormon, The Common Mormon, a name that belies its intricate nature, is a butterfly of multiple shades, both in color and behavior'; // Full description
+    } else if (butterflyName == 'Common Mime Swallowtail') {
+      return 'Common Mime Swallowtail, The world of butterflies is filled with artists and imitators, and the Common Mime Swallowtail excels at the latter.'; // Full description
+    } else if (butterflyName == 'Ceylon Blue Glassy Tiger') {
+      return 'Ceylon Blue Glassy Tiger, emic to the emerald isle of Sri Lanka, the Ceylon Blue Glassy Tiger is a shimmering spectacle.'; // Full description
+    }
+    else {
+      return '';
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +146,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                     Container(
                       width: size.width - 80,
                       margin: const EdgeInsets.only(top: 10),
@@ -179,10 +197,12 @@ class _NutritionScreenState extends State<NutritionScreen> {
                               ),
                             ),
                             SizedBox(height: 5),
-                            TextField(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Enter butterfly description here',
+// Displaying the butterfly description here
+                            Text(
+                              getDescription(currentDetectedFood ?? ''),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.primaryColor,
                               ),
                             ),
                             const SizedBox(height: 20),
