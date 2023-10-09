@@ -9,6 +9,10 @@ import 'dart:io';
 import 'package:foodie/api_service.dart';
 import 'package:location/location.dart' as loc;  // Alias added
 import 'package:geocoding/geocoding.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pdfWidgets;
+import 'package:printing/printing.dart';
+import 'package:path_provider/path_provider.dart';
 
 class NutritionScreen extends StatefulWidget {
   NutritionScreen({
@@ -108,6 +112,29 @@ class _NutritionScreenState extends State<NutritionScreen> {
       print("Error fetching location: $e");
     }
   }
+  Future<void> _saveAsPDF(String description) async {
+    final pdf = pdfWidgets.Document();
+
+    pdf.addPage(
+      pdfWidgets.Page(
+        build: (pdfWidgets.Context context) => pdfWidgets.Center(
+          child: pdfWidgets.Text(
+            description,
+            style: pdfWidgets.TextStyle(fontSize: 14),
+          ),
+        ),
+      ),
+    );
+
+    final output = await getExternalStorageDirectory();
+    final file = File("${output!.path}/butterfly_description.pdf");
+    await file.writeAsBytes(await pdf.save());
+
+    // Optional: Display a message to the user
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Saved to ${file.path}')),
+    );
+  }
 
   String getDescription(String butterflyName) {
     if (butterflyName == 'Common_Indian_Crow') {
@@ -205,6 +232,13 @@ class _NutritionScreenState extends State<NutritionScreen> {
                                 color: AppColors.primaryColor,
                               ),
                             ),
+                            ElevatedButton(
+                              onPressed: () {
+                                _saveAsPDF(getDescription(currentDetectedFood ?? ''));
+                              },
+                              child: Text("Save Description as PDF"),
+                            ),
+                            //save description as pdf button
                             const SizedBox(height: 20),
                             ...nutritionDetails.entries.map((e) => Padding(
                               padding: const EdgeInsets.symmetric(vertical: 2),

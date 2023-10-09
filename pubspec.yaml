@@ -48,6 +48,8 @@ dependencies:
   intl: ^0.18.1
   location: ^4.3.0   # This is a recent version at my last update. Check pub.dev for the latest.
   geocoding: ^2.0.0
+  pdf:
+  printing:
 
 
 dev_dependencies:
