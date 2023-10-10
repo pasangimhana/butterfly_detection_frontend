@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:foodie/firebase_options.dart';
 import 'package:foodie/screens/user_details_screen.dart';
 import 'package:foodie/screens/signin_page.dart';
+import 'package:foodie/screens/signup.dart';
+import 'package:foodie/screens/prediction_history.dart';
 
 
 void main() async {
@@ -29,9 +31,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: UserDetailsScreen(),
+      home: SignInPage(),
     );
   }
 }
 //RegisterPage
 //UserDetailsScreen
+//HistoryScreen
+//SignInPage

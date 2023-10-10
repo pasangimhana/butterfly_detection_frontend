@@ -11,6 +11,7 @@ import 'package:foodie/main_layout.dart';
 import 'package:foodie/screens/function_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:foodie/screens/prediction_history.dart';
 
 class ReminderScreen extends StatefulWidget {
   final String? diseases;
@@ -257,7 +258,20 @@ class _ReminderScreenState extends State<ReminderScreen> {
                               'Please select the image before analysis.');
                         }
                       },
-                    )
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    MainButton(
+                      size: size,
+                      title: 'Prediction History',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HistoryScreen()), // or whatever the name of your prediction history screen class is
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
