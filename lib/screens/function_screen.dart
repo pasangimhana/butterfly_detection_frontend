@@ -6,7 +6,7 @@ import 'package:foodie/models/meal_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:foodie/api_service.dart';
-import 'package:location/location.dart' as loc;  // Alias added
+import 'package:location/location.dart' as loc;
 import 'package:geocoding/geocoding.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidgets;
@@ -39,7 +39,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
 
   String? currentDetected;
   loc.LocationData? currentLocation;
-  final location = loc.Location();  // Using the alias
+  final location = loc.Location();
   String? locationName;
 
   @override
@@ -76,10 +76,9 @@ class _NutritionScreenState extends State<NutritionScreen> {
 
       setState(() {
         currentDetected = response['class'];
-       // nutritionDetails = response['nutrition_info'];
+        // nutritionDetails = response['nutrition_info'];
         convertedNutritionDetails = nutritionDetails.map((key, value) => MapEntry(key, value.toString()));
       });
-
     } catch (error) {
       print("Error fetching data: $error");
     }
@@ -115,7 +114,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
   }
 
   Future<void> saveHistory(String location, String detectionClass) async {
-    final url = 'http://10.0.2.2:8001/save-history'; // Update with your server URL
+    final url = 'http://10.0.2.2:8001/save-history';
 
     final response = await http.post(
       Uri.parse(url),
@@ -135,16 +134,38 @@ class _NutritionScreenState extends State<NutritionScreen> {
     }
   }
 
+  Future<pdfWidgets.Image?> _getNetworkImage(String url) async {
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+      return pdfWidgets.Image(pdfWidgets.MemoryImage(bytes));
+    } else {
+      throw Exception('Failed to load image');
+    }
+  }
+
+
+
 
   Future<void> _saveAsPDF(String description) async {
     final pdf = pdfWidgets.Document();
 
+    final image = currentDetected == 'Common_Indian_Crow' ? await _getNetworkImage("https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1") : null;
+
     pdf.addPage(
       pdfWidgets.Page(
         build: (pdfWidgets.Context context) => pdfWidgets.Center(
-          child: pdfWidgets.Text(
-            description,
-            style: pdfWidgets.TextStyle(fontSize: 14),
+          child: pdfWidgets.Column(
+            children: [
+              if (image != null) image,  // directly use the image
+
+              pdfWidgets.SizedBox(height: 20),
+              pdfWidgets.Text(
+                description,
+                style: pdfWidgets.TextStyle(fontSize: 14),
+              ),
+            ],
           ),
         ),
       ),
@@ -154,7 +175,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
     final file = File("${output!.path}/butterfly_description.pdf");
     await file.writeAsBytes(await pdf.save());
 
-    // Optional: Display a message to the user
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Saved to ${file.path}')),
     );
@@ -177,7 +197,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -197,6 +216,10 @@ class _NutritionScreenState extends State<NutritionScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
+                    // Preview image
+                    if (currentDetected == 'Common_Indian_Crow')
+                      Image.network("https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1"),
 
                     Container(
                       width: size.width - 80,
@@ -248,7 +271,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
                               ),
                             ),
                             SizedBox(height: 5),
-// Displaying the butterfly description here
                             Text(
                               getDescription(currentDetected ?? ''),
                               style: TextStyle(
@@ -262,7 +284,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
                               },
                               child: Text("Save Description as PDF"),
                             ),
-                            //save description as pdf button
                             const SizedBox(height: 20),
                             ...nutritionDetails.entries.map((e) => Padding(
                               padding: const EdgeInsets.symmetric(vertical: 2),
@@ -273,46 +294,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                         ),
                       ),
                     ),
-                    (diseases != null && widget.diseases != null && diseases!.contains(widget.diseases!))
-                        ? Container(
-                      width: size.width - 80,
-                      margin: const EdgeInsets.only(top: 20),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 15,
-                        horizontal: 20,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColors.primaryColor,
-                        border: Border.all(
-                          width: 2,
-                          color: Colors.red,
-                        ),
-                      ),
-                      child: const Column(
-                        children: [
-                          Text(
-                            'Warning',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            'This is not good for your health,\nbecause This can be cause to your diabetes.',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    )
-                        : Container(),
+                    // ... rest of your code
                   ],
                 ),
               ),
@@ -320,26 +302,15 @@ class _NutritionScreenState extends State<NutritionScreen> {
             const SizedBox(
               height: 10,
             ),
-            //save history button
-            // In your _NutritionScreenState class
             ElevatedButton(
               onPressed: () {
                 saveHistory(locationName ?? '', currentDetected ?? '');
               },
               child: Text("Save History"),
             ),
-
-
           ],
         ),
       ),
     );
-  }
-
-  String getDayName() {
-    final now = DateTime.now();
-    final formatter = DateFormat('EEEE');
-    final dayName = formatter.format(now);
-    return dayName;
   }
 }
