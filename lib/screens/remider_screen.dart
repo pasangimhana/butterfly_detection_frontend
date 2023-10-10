@@ -8,7 +8,7 @@ import 'package:foodie/common_widgets/snackbar.dart';
 import 'package:foodie/constants.dart';
 import 'package:foodie/main.dart';
 import 'package:foodie/main_layout.dart';
-import 'package:foodie/screens/nutrition_screen.dart';
+import 'package:foodie/screens/function_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -86,7 +86,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
           context,
           MaterialPageRoute(
             builder: (context) => NutritionScreen(
-              detectedFood: detectedFood,
+              detected: detectedFood,
               mealTime: mealTimeList[_selectedIndex],
               diseases: widget.diseases,
             ),

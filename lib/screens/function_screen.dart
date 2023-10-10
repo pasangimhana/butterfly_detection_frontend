@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/common_widgets/main_button.dart';
 import 'package:foodie/constants.dart';
-import 'package:foodie/firebase_service.dart';
 import 'package:foodie/main_layout.dart';
 import 'package:foodie/models/meal_model.dart';
 import 'package:intl/intl.dart';
@@ -13,16 +12,18 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidgets;
 import 'package:printing/printing.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class NutritionScreen extends StatefulWidget {
   NutritionScreen({
     Key? key,
-    required this.detectedFood,
+    required this.detected,
     required this.mealTime,
     this.diseases,
   });
 
-  final String detectedFood;
+  final String detected;
   final String mealTime;
   final String? diseases;
 
@@ -36,7 +37,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
   Map<String, dynamic> nutritionDetails = {};
   Map<String, String> convertedNutritionDetails = {};
 
-  String? currentDetectedFood;
+  String? currentDetected;
   loc.LocationData? currentLocation;
   final location = loc.Location();  // Using the alias
   String? locationName;
@@ -45,7 +46,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
   void initState() {
     super.initState();
     _initializeLocation();
-    currentDetectedFood = widget.detectedFood;
+    currentDetected = widget.detected;
     _fetchAndSetData();
   }
 
@@ -74,8 +75,8 @@ class _NutritionScreenState extends State<NutritionScreen> {
       Map<String, dynamic> response = await ApiService().uploadImage(myImage);
 
       setState(() {
-        currentDetectedFood = response['class'];
-        nutritionDetails = response['nutrition_info'];
+        currentDetected = response['class'];
+       // nutritionDetails = response['nutrition_info'];
         convertedNutritionDetails = nutritionDetails.map((key, value) => MapEntry(key, value.toString()));
       });
 
@@ -112,6 +113,29 @@ class _NutritionScreenState extends State<NutritionScreen> {
       print("Error fetching location: $e");
     }
   }
+
+  Future<void> saveHistory(String location, String detectionClass) async {
+    final url = 'http://10.0.2.2:8001/save-history'; // Update with your server URL
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'location': location,
+        'detection_class': detectionClass,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print("History saved successfully!");
+    } else {
+      throw Exception('Failed to save history');
+    }
+  }
+
+
   Future<void> _saveAsPDF(String description) async {
     final pdf = pdfWidgets.Document();
 
@@ -167,7 +191,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                 child: Column(
                   children: [
                     Text(
-                      widget.detectedFood,
+                      widget.detected,
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -226,7 +250,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                             SizedBox(height: 5),
 // Displaying the butterfly description here
                             Text(
-                              getDescription(currentDetectedFood ?? ''),
+                              getDescription(currentDetected ?? ''),
                               style: TextStyle(
                                 fontSize: 14,
                                 color: AppColors.primaryColor,
@@ -234,7 +258,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                _saveAsPDF(getDescription(currentDetectedFood ?? ''));
+                                _saveAsPDF(getDescription(currentDetected ?? ''));
                               },
                               child: Text("Save Description as PDF"),
                             ),
@@ -296,22 +320,16 @@ class _NutritionScreenState extends State<NutritionScreen> {
             const SizedBox(
               height: 10,
             ),
-            MainButton(
-              size: size,
-              title: 'Next',
-              onTap: () {
-                Meal meal = Meal(
-                  type: widget.detectedFood,
-                  diseases: [],
-                  nutritions: convertedNutritionDetails,
-                  dayName: getDayName(),
-                  dateTime: DateTime.now(),
-                  mealTime: widget.mealTime,
-                );
-                FirebaseService().addMealRecord(meal);
-                Navigator.of(context).pushReplacementNamed("/nextScreenRouteName");
+            //save history button
+            // In your _NutritionScreenState class
+            ElevatedButton(
+              onPressed: () {
+                saveHistory(locationName ?? '', currentDetected ?? '');
               },
+              child: Text("Save History"),
             ),
+
+
           ],
         ),
       ),
