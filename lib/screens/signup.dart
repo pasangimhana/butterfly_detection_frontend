@@ -20,7 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _conCPassword = TextEditingController();
 
   Future<void> _registerUser() async {
-    final url = 'http://10.0.2.2:8001chinharshi/register'; // Adjust this to your FastAPI URL
+    final url = 'https://butterfly-detection.onrender.com/register'; // Adjust this to your FastAPI URL
 
     final response = await http.post(
       Uri.parse(url),

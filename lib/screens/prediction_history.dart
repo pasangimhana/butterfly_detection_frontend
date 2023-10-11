@@ -9,7 +9,7 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   List<dynamic> historyList = [];
-  final String apiUrl = 'http://10.0.2.2:8001/history';
+  final String apiUrl = 'https://butterfly-detection.onrender.com/history';
 
   Future<void> fetchHistory() async {
     final response = await http.get(Uri.parse(apiUrl));
