@@ -44,12 +44,13 @@ List<String>? diseases;
 class _NutritionScreenState extends State<NutritionScreen> {
   Map<String, dynamic> nutritionDetails = {};
   Map<String, String> convertedNutritionDetails = {};
+  
   final Map<String, String> butterflyImages = {
     'Common_Indian_Crow': "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
-    'Crimson Rose': "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
-    'Common Mormon': "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
-    'Common Mime Swallowtail': "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
-    'Ceylon Blue Glassy Tiger': "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
+    'Crimson Rose': "https://dmc.dilmahtea.com/web-space/dmc/butterflies/76546f9a641ede2beab506b96df1688d889e629a/148938871051024.png",
+    'Common Mormon': "https://upload.wikimedia.org/wikipedia/commons/8/8d/Papilio_polytes_mating_in_Kadavoor.jpg",
+    'Common Mime Swallowtail': "https://upload.wikimedia.org/wikipedia/commons/c/c7/Open_wing_position_of_Papilio_clytia%2C_Form_Dissimilis%2C_Linnaeus%2C_1758_%E2%80%93_Common_Mime_WLB.jpg",
+    'Ceylon Blue Glassy Tiger': "https://upload.wikimedia.org/wikipedia/commons/6/63/Ceylon_Blue_Glassy_Tiger_Ideopsis_similis_%E7%90%89%E7%90%83%E6%B5%85%E8%91%B1%E6%96%91%28%E3%83%AA%E3%83%A5%E3%82%A6%E3%82%AD%E3%83%A5%E3%82%A6%E3%82%A2%E3%82%B5%E3%82%AE%E3%83%9E%E3%83%80%E3%83%A9%29.jpg",
   };
   String? currentDetected;
   loc.LocationData? currentLocation;
