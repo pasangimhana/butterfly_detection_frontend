@@ -48,9 +48,11 @@ dependencies:
   intl: ^0.18.1
   location: ^4.3.0   # This is a recent version at my last update. Check pub.dev for the latest.
   geocoding: ^2.0.0
-  pdf:
-  printing:
-
+  pdf: ^3.10.4
+  printing: ^5.6.1
+  cached_network_image: ^3.2.0
+  permission_handler: ^10.2.0
+  file_picker:
 
 
 
