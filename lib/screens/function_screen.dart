@@ -6,6 +6,7 @@ import 'package:foodie/models/meal_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:foodie/api_service.dart';
+import 'package:foodie/screens/location.dart';
 import 'package:location/location.dart' as loc;
 import 'package:geocoding/geocoding.dart';
 import 'package:pdf/pdf.dart';
@@ -17,6 +18,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 
 
@@ -27,6 +29,7 @@ class NutritionScreen extends StatefulWidget {
     required this.mealTime,
     this.diseases,
   });
+  LatLng? selectedLocation;
 
   final String detected;
   final String mealTime;
@@ -201,11 +204,9 @@ class _NutritionScreenState extends State<NutritionScreen> {
 
 
 
-  @override
+   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return MainLayout(
       title: 'Butterfly detection',
       customBody: Container(
@@ -223,11 +224,8 @@ class _NutritionScreenState extends State<NutritionScreen> {
                       ),
                     ),
 
-                    // Preview image
                     if (currentDetected != null)
                       Image.network(butterflyImages[currentDetected] ?? ''),
-
-
 
                     Container(
                       width: size.width - 80,
@@ -263,8 +261,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                'Location: ${locationName ??
-                                    'Fetching location...'}',
+                                'Location: ${locationName ?? 'Fetching location...'}',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: AppColors.primaryColor,
@@ -296,29 +293,43 @@ class _NutritionScreenState extends State<NutritionScreen> {
                             const SizedBox(height: 20),
                             ...nutritionDetails.entries.map((e) =>
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 2),
-                                  child: Text('${e.key}: ${e.value}',
-                                      style: TextStyle(fontSize: 16)),
+                                  padding: const EdgeInsets.symmetric(vertical: 2),
+                                  child: Text('${e.key}: ${e.value}', style: TextStyle(fontSize: 16)),
                                 )).toList(),
                             const SizedBox(height: 20),
                           ],
                         ),
                       ),
                     ),
-                    // ... rest of your code
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        saveHistory(locationName ?? '', currentDetected ?? '');
+                      },
+                      child: Text("Save History"),
+                    ),
+                    const SizedBox(height: 10),
+                  ElevatedButton(
+                onPressed: () async {
+                  final LatLng? returnedLocation = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LocationScreen()),
+                  );
+                  if (returnedLocation != null) {
+                    setState(() {
+                      widget.selectedLocation = returnedLocation;
+                      locationName = "Lat: ${widget.selectedLocation!.latitude}, Lng: ${widget.selectedLocation!.longitude}";
+                    });
+                  }
+                },
+                child: Text("Add location"),
+              ),
+              if (widget.selectedLocation != null)
+                Text("Selected Location: Lat: ${widget.selectedLocation!.latitude}, Lng: ${widget.selectedLocation!.longitude}"),
+
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                saveHistory(locationName ?? '', currentDetected ?? '');
-              },
-              child: Text("Save History"),
             ),
           ],
         ),
