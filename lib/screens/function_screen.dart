@@ -17,8 +17,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:file_picker/file_picker.dart';
+//import 'package:file_picker/file_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:typed_data';
+
 
 
 
@@ -176,20 +178,44 @@ File? _pdfFile;
     }
   }
 
+Future<pdfWidgets.MemoryImage> _fetchNetworkImage(String url) async {
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load image');
+  }
+  final Uint8List uint8list = response.bodyBytes;
+  return pdfWidgets.MemoryImage(uint8list);
+}
+
 
 Future<void> _saveAsPDF(String description) async {
   final pdf = pdfWidgets.Document();
 
+  // Fetch the butterfly image
+  final imageUrl = butterflyImages[currentDetected];
+  final image = imageUrl != null ? await _fetchNetworkImage(imageUrl) : null;
+
   pdf.addPage(
     pdfWidgets.Page(
-      build: (pdfWidgets.Context context) => pdfWidgets.Center(
-        child: pdfWidgets.Text(
-          description,
-          style: pdfWidgets.TextStyle(fontSize: 14),
-        ),
-      ),
+      build: (pdfWidgets.Context context) {
+        return pdfWidgets.Center(
+          child: pdfWidgets.Column(
+            mainAxisAlignment: pdfWidgets.MainAxisAlignment.center,
+            children: [
+              if (image != null)
+                pdfWidgets.Image(image),  // Display the image if it's available
+              pdfWidgets.SizedBox(height: 20),
+              pdfWidgets.Text(
+                description,
+                style: pdfWidgets.TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+        );
+      },
     ),
   );
+
 
   final directories = await getExternalStorageDirectories(type: StorageDirectory.documents);
   if (directories == null || directories.isEmpty) {
