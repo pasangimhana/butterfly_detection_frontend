@@ -44,7 +44,7 @@ List<String>? diseases;
 class _NutritionScreenState extends State<NutritionScreen> {
   Map<String, dynamic> nutritionDetails = {};
   Map<String, String> convertedNutritionDetails = {};
-  
+
   final Map<String, String> butterflyImages = {
     'Common_Indian_Crow': "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
     'Crimson Rose': "https://dmc.dilmahtea.com/web-space/dmc/butterflies/76546f9a641ede2beab506b96df1688d889e629a/148938871051024.png",
@@ -56,7 +56,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
   loc.LocationData? currentLocation;
   final location = loc.Location();
   String? locationName;
-
+File? _pdfFile;
   @override
   void initState() {
     super.initState();
@@ -177,30 +177,39 @@ class _NutritionScreenState extends State<NutritionScreen> {
   }
 
 
+Future<void> _saveAsPDF(String description) async {
+  final pdf = pdfWidgets.Document();
 
-  Future<void> _saveAsPDF(String description) async {
-    final pdf = pdfWidgets.Document();
-
-    pdf.addPage(
-      pdfWidgets.Page(
-        build: (pdfWidgets.Context context) => pdfWidgets.Center(
-          child: pdfWidgets.Text(
-            description,
-            style: pdfWidgets.TextStyle(fontSize: 14),
-          ),
+  pdf.addPage(
+    pdfWidgets.Page(
+      build: (pdfWidgets.Context context) => pdfWidgets.Center(
+        child: pdfWidgets.Text(
+          description,
+          style: pdfWidgets.TextStyle(fontSize: 14),
         ),
       ),
-    );
+    ),
+  );
 
-    final output = await getExternalStorageDirectory();
-    final file = File("${output!.path}/butterfly_description.pdf");
-    await file.writeAsBytes(await pdf.save());
-
-    // Optional: Display a message to the user
+  final directories = await getExternalStorageDirectories(type: StorageDirectory.documents);
+  if (directories == null || directories.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Saved to ${file.path}')),
+      SnackBar(content: Text('Failed to find Documents directory.')),
     );
+    return;
   }
+
+  final documentsDirectory = directories.first;
+  _pdfFile = File("${documentsDirectory.path}/butterfly_description.pdf");
+  await _pdfFile!.writeAsBytes(await pdf.save());
+
+  // Display the saved path to the user
+  ScaffoldMessenger.of(context).showSnackBar(
+   SnackBar(content: Text('Saved to ${_pdfFile!.path}')),
+
+  );
+}
+
 
 
 
@@ -347,6 +356,20 @@ class _NutritionScreenState extends State<NutritionScreen> {
     }
   },
   child: Text("Add location"),
+),
+ElevatedButton(
+  onPressed: () {
+    if (_pdfFile != null && _pdfFile!.existsSync()) {
+      Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => _pdfFile!.readAsBytesSync(),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please save the PDF first.')),
+      );
+    }
+  },
+  child: Text("Open PDF"),
 ),
 
               // if (widget.selectedLocation != null)
