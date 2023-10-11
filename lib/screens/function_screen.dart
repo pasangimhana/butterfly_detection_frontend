@@ -64,6 +64,26 @@ class _NutritionScreenState extends State<NutritionScreen> {
     _fetchAndSetData();
   }
 
+
+  Future<String?> getPlaceAddress(double lat, double lng) async {
+  try {
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+
+    if (placemarks.isEmpty) {
+      return null;
+    }
+
+    final place = placemarks[0];
+
+    // This is a basic address format, you can customize it as needed.
+    return "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}";
+  } catch (error) {
+    print("Error obtaining address: $error");
+    return null;
+  }
+}
+
+
   Future<void> _initializeLocation() async {
     bool? serviceEnabled = await location.serviceEnabled();
     if (serviceEnabled == null || !serviceEnabled) {
@@ -309,23 +329,27 @@ class _NutritionScreenState extends State<NutritionScreen> {
                       child: Text("Save History"),
                     ),
                     const SizedBox(height: 10),
-                  ElevatedButton(
-                onPressed: () async {
-                  final LatLng? returnedLocation = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LocationScreen()),
-                  );
-                  if (returnedLocation != null) {
-                    setState(() {
-                      widget.selectedLocation = returnedLocation;
-                      locationName = "Lat: ${widget.selectedLocation!.latitude}, Lng: ${widget.selectedLocation!.longitude}";
-                    });
-                  }
-                },
-                child: Text("Add location"),
-              ),
-              if (widget.selectedLocation != null)
-                Text("Selected Location: Lat: ${widget.selectedLocation!.latitude}, Lng: ${widget.selectedLocation!.longitude}"),
+                ElevatedButton(
+  onPressed: () async {
+    final LatLng? returnedLocation = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LocationScreen()),
+    );
+
+    if (returnedLocation != null) {
+      final address = await getPlaceAddress(returnedLocation.latitude, returnedLocation.longitude);
+
+      setState(() {
+        widget.selectedLocation = returnedLocation;
+        locationName = address ?? "Unknown address";
+      });
+    }
+  },
+  child: Text("Add location"),
+),
+
+              // if (widget.selectedLocation != null)
+              //   Text("Selected Location: Lat: ${widget.selectedLocation!.latitude}, Lng: ${widget.selectedLocation!.longitude}"),
 
                   ],
                 ),
