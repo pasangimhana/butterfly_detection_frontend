@@ -329,7 +329,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                       child: Text("Save History"),
                     ),
                     const SizedBox(height: 10),
-                ElevatedButton(
+    ElevatedButton(
   onPressed: () async {
     final LatLng? returnedLocation = await Navigator.push(
       context,
