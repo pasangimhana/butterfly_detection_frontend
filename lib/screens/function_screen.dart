@@ -38,11 +38,10 @@ class ButterflyScreen extends StatefulWidget {
   _ButterflyScreenState createState() => _ButterflyScreenState();
 }
 
-List<String>? diseases;
+
 
 class _ButterflyScreenState extends State<ButterflyScreen> {
-  Map<String, dynamic> nutritionDetails = {};
-  Map<String, String> convertedNutritionDetails = {};
+
 
   final Map<String, String> butterflyImages = {
     'Common_Indian_Crow': "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
@@ -110,9 +109,7 @@ File? _pdfFile;
 
       setState(() {
         currentDetected = response['class'];
-        // nutritionDetails = response['nutrition_info'];
-        convertedNutritionDetails = nutritionDetails.map((key, value) =>
-            MapEntry(key, value.toString()));
+        
       });
     } catch (error) {
       print("Error fetching data: $error");
