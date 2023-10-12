@@ -57,6 +57,7 @@ dependencies:
   geolocator: ^8.0.2
   xml: ^6.3.0
   flutter_launcher_icons: ^0.13.1
+  image: ^4.1.3
 
 
 

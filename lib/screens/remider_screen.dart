@@ -12,6 +12,7 @@ import 'package:foodie/screens/function_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:foodie/screens/prediction_history.dart';
+import 'package:image/image.dart' as img;
 
 class ReminderScreen extends StatefulWidget {
   final String? diseases;
@@ -31,6 +32,15 @@ class _ReminderScreenState extends State<ReminderScreen> {
   bool _isLoading = true;
   bool _cameraLoading = false;
  
+ //image validation
+ bool isValidImage(File file) {
+  try {
+    final image = img.decodeImage(file.readAsBytesSync());
+    return image != null;
+  } catch (e) {
+    return false;
+  }
+}
 
   @override
   void initState() {
@@ -121,13 +131,16 @@ class _ReminderScreenState extends State<ReminderScreen> {
     if (_controller!.value.isTakingPicture) {
       return;
     }
-
+//test image validation
     try {
       XFile picture = await _controller!.takePicture();
-      final String filePath = picture.path;
+    if (isValidImage(File(picture.path))) {
       setState(() {
-        imagePath = filePath;
+        imagePath = picture.path;
       });
+    } else {
+      showSnackBar(isError: true, msg: 'The image seems to be corrupt. Please try another.');
+    }
     } on CameraException catch (e) {
       print('Error taking picture: $e');
     }
@@ -143,9 +156,13 @@ class _ReminderScreenState extends State<ReminderScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
+    if (isValidImage(File(pickedFile.path))) {
       setState(() {
         imagePath = pickedFile.path;
       });
+    } else {
+      showSnackBar(isError: true, msg: 'The selected image seems to be corrupt. Please choose another.');
+    }
     }
   }
 
