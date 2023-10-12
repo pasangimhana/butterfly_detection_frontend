@@ -43,8 +43,6 @@ dependencies:
   path_provider: ^2.1.1
   image_picker: ^1.0.4
   dio: ^5.3.2
-  firebase_core: ^2.15.1
-  cloud_firestore: ^4.9.1
   intl: ^0.18.1
   location: ^4.3.0   # This is a recent version at my last update. Check pub.dev for the latest.
   geocoding: ^2.0.0
@@ -57,6 +55,8 @@ dependencies:
   latlong2: ^0.9.0
   google_maps_flutter: ^2.5.0
   geolocator: ^8.0.2
+  xml: ^6.3.0
+  flutter_launcher_icons: ^0.13.1
 
 
 
@@ -90,6 +90,12 @@ flutter:
     - assets/icons/on_switch.png
     - assets/icons/no_icon.png
     - assets/icons/yes_icon.png
+    - assets/butterfly_species_1.xml
+    - assets/butterfly_species_2.xml
+    - assets/butterfly_species_3.xml
+    - assets/butterfly_species_4.xml
+    - assets/butterfly_species_5.xml
+  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

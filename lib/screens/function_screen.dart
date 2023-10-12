@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:foodie/common_widgets/main_button.dart';
 import 'package:foodie/constants.dart';
 import 'package:foodie/main_layout.dart';
-import 'package:foodie/models/meal_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:foodie/api_service.dart';
@@ -24,26 +23,24 @@ import 'dart:typed_data';
 
 
 
-class NutritionScreen extends StatefulWidget {
-  NutritionScreen({
+class ButterflyScreen extends StatefulWidget {
+  ButterflyScreen({
     Key? key,
     required this.detected,
-    required this.mealTime,
-    this.diseases,
+
   });
   LatLng? selectedLocation;
 
   final String detected;
-  final String mealTime;
-  final String? diseases;
+
 
   @override
-  _NutritionScreenState createState() => _NutritionScreenState();
+  _ButterflyScreenState createState() => _ButterflyScreenState();
 }
 
 List<String>? diseases;
 
-class _NutritionScreenState extends State<NutritionScreen> {
+class _ButterflyScreenState extends State<ButterflyScreen> {
   Map<String, dynamic> nutritionDetails = {};
   Map<String, String> convertedNutritionDetails = {};
 
@@ -239,7 +236,7 @@ Future<void> _saveAsPDF(String description) async {
 
 
 
-
+//xml1=https://drive.google.com/file/d/1aTXT9j1VgM_ZxmQzaFhHdnSJecmgiuuj/view?usp=drive_link
 
   String getDescription(String butterflyName) {
     if (butterflyName == 'Common_Indian_Crow') {

@@ -30,7 +30,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
   int _selectedIndex = 0;
   bool _isLoading = true;
   bool _cameraLoading = false;
-  final List<String> mealTimeList = ['Breakfast', 'Lunch', 'Dinner', 'Other'];
+ 
 
   @override
   void initState() {
@@ -80,16 +80,15 @@ class _ReminderScreenState extends State<ReminderScreen> {
         _isLoading = false;
       });
 
-      String? detectedFood = data['class'];
+      String? detected = data['class'];
 
-      if (detectedFood != null && detectedFood != "") {
+      if (detected!= null && detected != "") {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => NutritionScreen(
-              detected: detectedFood,
-              mealTime: mealTimeList[_selectedIndex],
-              diseases: widget.diseases,
+            builder: (context) =>  ButterflyScreen(
+              detected: detected,
+          
             ),
           ),
         );
