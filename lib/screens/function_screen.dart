@@ -20,41 +20,42 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:typed_data';
 
-
-
-
 class ButterflyScreen extends StatefulWidget {
   ButterflyScreen({
     Key? key,
     required this.detected,
-
   });
   LatLng? selectedLocation;
 
   final String detected;
 
-
   @override
   _ButterflyScreenState createState() => _ButterflyScreenState();
 }
 
-
+List<String>? diseases;
 
 class _ButterflyScreenState extends State<ButterflyScreen> {
-
+  Map<String, dynamic> nutritionDetails = {};
+  Map<String, String> convertedNutritionDetails = {};
 
   final Map<String, String> butterflyImages = {
-    'Common_Indian_Crow': "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
-    'Crimson Rose': "https://dmc.dilmahtea.com/web-space/dmc/butterflies/76546f9a641ede2beab506b96df1688d889e629a/148938871051024.png",
-    'Common Mormon': "https://upload.wikimedia.org/wikipedia/commons/8/8d/Papilio_polytes_mating_in_Kadavoor.jpg",
-    'Common Mime Swallowtail': "https://upload.wikimedia.org/wikipedia/commons/c/c7/Open_wing_position_of_Papilio_clytia%2C_Form_Dissimilis%2C_Linnaeus%2C_1758_%E2%80%93_Common_Mime_WLB.jpg",
-    'Ceylon Blue Glassy Tiger': "https://upload.wikimedia.org/wikipedia/commons/6/63/Ceylon_Blue_Glassy_Tiger_Ideopsis_similis_%E7%90%89%E7%90%83%E6%B5%85%E8%91%B1%E6%96%91%28%E3%83%AA%E3%83%A5%E3%82%A6%E3%82%AD%E3%83%A5%E3%82%A6%E3%82%A2%E3%82%B5%E3%82%AE%E3%83%9E%E3%83%80%E3%83%A9%29.jpg",
+    'Common_Indian_Crow':
+        "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
+    'Crimson Rose':
+        "https://dmc.dilmahtea.com/web-space/dmc/butterflies/76546f9a641ede2beab506b96df1688d889e629a/148938871051024.png",
+    'Common Mormon':
+        "https://upload.wikimedia.org/wikipedia/commons/8/8d/Papilio_polytes_mating_in_Kadavoor.jpg",
+    'Common Mime Swallowtail':
+        "https://upload.wikimedia.org/wikipedia/commons/c/c7/Open_wing_position_of_Papilio_clytia%2C_Form_Dissimilis%2C_Linnaeus%2C_1758_%E2%80%93_Common_Mime_WLB.jpg",
+    'Ceylon Blue Glassy Tiger':
+        "https://upload.wikimedia.org/wikipedia/commons/6/63/Ceylon_Blue_Glassy_Tiger_Ideopsis_similis_%E7%90%89%E7%90%83%E6%B5%85%E8%91%B1%E6%96%91%28%E3%83%AA%E3%83%A5%E3%82%A6%E3%82%AD%E3%83%A5%E3%82%A6%E3%82%A2%E3%82%B5%E3%82%AE%E3%83%9E%E3%83%80%E3%83%A9%29.jpg",
   };
   String? currentDetected;
   loc.LocationData? currentLocation;
   final location = loc.Location();
   String? locationName;
-File? _pdfFile;
+  File? _pdfFile;
   @override
   void initState() {
     super.initState();
@@ -63,25 +64,23 @@ File? _pdfFile;
     _fetchAndSetData();
   }
 
-
   Future<String?> getPlaceAddress(double lat, double lng) async {
-  try {
-    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
 
-    if (placemarks.isEmpty) {
+      if (placemarks.isEmpty) {
+        return null;
+      }
+
+      final place = placemarks[0];
+
+      // This is a basic address format, you can customize it as needed.
+      return "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}";
+    } catch (error) {
+      print("Error obtaining address: $error");
       return null;
     }
-
-    final place = placemarks[0];
-
-    // This is a basic address format, you can customize it as needed.
-    return "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}";
-  } catch (error) {
-    print("Error obtaining address: $error");
-    return null;
   }
-}
-
 
   Future<void> _initializeLocation() async {
     bool? serviceEnabled = await location.serviceEnabled();
@@ -109,23 +108,20 @@ File? _pdfFile;
 
       setState(() {
         currentDetected = response['class'];
-        
+        // nutritionDetails = response['nutrition_info'];
+        convertedNutritionDetails = nutritionDetails
+            .map((key, value) => MapEntry(key, value.toString()));
       });
     } catch (error) {
       print("Error fetching data: $error");
     }
   }
 
-
-
-
-
-
   Future<void> _fetchLocation() async {
     try {
       var _locationData = await location.getLocation();
-      print("Latitude: ${_locationData.latitude}, Longitude: ${_locationData
-          .longitude}");
+      print(
+          "Latitude: ${_locationData.latitude}, Longitude: ${_locationData.longitude}");
 
       List<Placemark> placemarks = await placemarkFromCoordinates(
         _locationData.latitude!,
@@ -139,7 +135,7 @@ File? _pdfFile;
 
       final place = placemarks[0];
       locationName =
-      "${place.locality}, ${place.administrativeArea}, ${place.country}";
+          "${place.locality}, ${place.administrativeArea}, ${place.country}";
 
       print("Fetched location name: $locationName");
 
@@ -172,66 +168,62 @@ File? _pdfFile;
     }
   }
 
-Future<pdfWidgets.MemoryImage> _fetchNetworkImage(String url) async {
-  final response = await http.get(Uri.parse(url));
-  if (response.statusCode != 200) {
-    throw Exception('Failed to load image');
+  Future<pdfWidgets.MemoryImage> _fetchNetworkImage(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load image');
+    }
+    final Uint8List uint8list = response.bodyBytes;
+    return pdfWidgets.MemoryImage(uint8list);
   }
-  final Uint8List uint8list = response.bodyBytes;
-  return pdfWidgets.MemoryImage(uint8list);
-}
 
+  Future<void> _saveAsPDF(String description) async {
+    final pdf = pdfWidgets.Document();
 
-Future<void> _saveAsPDF(String description) async {
-  final pdf = pdfWidgets.Document();
+    // Fetch the butterfly image
+    final imageUrl = butterflyImages[currentDetected];
+    final image = imageUrl != null ? await _fetchNetworkImage(imageUrl) : null;
 
-  // Fetch the butterfly image
-  final imageUrl = butterflyImages[currentDetected];
-  final image = imageUrl != null ? await _fetchNetworkImage(imageUrl) : null;
-
-  pdf.addPage(
-    pdfWidgets.Page(
-      build: (pdfWidgets.Context context) {
-        return pdfWidgets.Center(
-          child: pdfWidgets.Column(
-            mainAxisAlignment: pdfWidgets.MainAxisAlignment.center,
-            children: [
-              if (image != null)
-                pdfWidgets.Image(image),  // Display the image if it's available
-              pdfWidgets.SizedBox(height: 20),
-              pdfWidgets.Text(
-                description,
-                style: pdfWidgets.TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
-
-
-  final directories = await getExternalStorageDirectories(type: StorageDirectory.documents);
-  if (directories == null || directories.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to find Documents directory.')),
+    pdf.addPage(
+      pdfWidgets.Page(
+        build: (pdfWidgets.Context context) {
+          return pdfWidgets.Center(
+            child: pdfWidgets.Column(
+              mainAxisAlignment: pdfWidgets.MainAxisAlignment.center,
+              children: [
+                if (image != null)
+                  pdfWidgets.Image(
+                      image), // Display the image if it's available
+                pdfWidgets.SizedBox(height: 20),
+                pdfWidgets.Text(
+                  description,
+                  style: pdfWidgets.TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
-    return;
+
+    final directories =
+        await getExternalStorageDirectories(type: StorageDirectory.documents);
+    if (directories == null || directories.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to find Documents directory.')),
+      );
+      return;
+    }
+
+    final documentsDirectory = directories.first;
+    _pdfFile = File("${documentsDirectory.path}/butterfly_description.pdf");
+    await _pdfFile!.writeAsBytes(await pdf.save());
+
+    // Display the saved path to the user
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Saved to ${_pdfFile!.path}')),
+    );
   }
-
-  final documentsDirectory = directories.first;
-  _pdfFile = File("${documentsDirectory.path}/butterfly_description.pdf");
-  await _pdfFile!.writeAsBytes(await pdf.save());
-
-  // Display the saved path to the user
-  ScaffoldMessenger.of(context).showSnackBar(
-   SnackBar(content: Text('Saved to ${_pdfFile!.path}')),
-
-  );
-}
-
-
-
 
 //xml1=https://drive.google.com/file/d/1aTXT9j1VgM_ZxmQzaFhHdnSJecmgiuuj/view?usp=drive_link
 
@@ -246,15 +238,12 @@ Future<void> _saveAsPDF(String description) async {
       return 'Scientific Name: Papilio clytia,Host Plant:  Neolitsea cassia,  Litsea longifolia,'; // Full description
     } else if (butterflyName == 'Ceylon Blue Glassy Tiger') {
       return 'Scientific Name: Ideopsis similis,Host Plant:Tylophora indica.'; // Full description
-    }
-    else {
+    } else {
       return '';
     }
   }
 
-
-
-   @override
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return MainLayout(
@@ -336,16 +325,20 @@ Future<void> _saveAsPDF(String description) async {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                _saveAsPDF(getDescription(currentDetected ?? ''));
+                                _saveAsPDF(
+                                    getDescription(currentDetected ?? ''));
                               },
                               child: Text("Save Description as PDF"),
                             ),
                             const SizedBox(height: 20),
-                            ...nutritionDetails.entries.map((e) =>
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 2),
-                                  child: Text('${e.key}: ${e.value}', style: TextStyle(fontSize: 16)),
-                                )).toList(),
+                            ...nutritionDetails.entries
+                                .map((e) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 2),
+                                      child: Text('${e.key}: ${e.value}',
+                                          style: TextStyle(fontSize: 16)),
+                                    ))
+                                .toList(),
                             const SizedBox(height: 20),
                           ],
                         ),
@@ -359,42 +352,46 @@ Future<void> _saveAsPDF(String description) async {
                       child: Text("Save History"),
                     ),
                     const SizedBox(height: 10),
-    ElevatedButton(
-  onPressed: () async {
-    final LatLng? returnedLocation = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LocationScreen()),
-    );
+                    ElevatedButton(
+                      onPressed: () async {
+                        final LatLng? returnedLocation = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LocationScreen()),
+                        );
 
-    if (returnedLocation != null) {
-      final address = await getPlaceAddress(returnedLocation.latitude, returnedLocation.longitude);
+                        if (returnedLocation != null) {
+                          final address = await getPlaceAddress(
+                              returnedLocation.latitude,
+                              returnedLocation.longitude);
 
-      setState(() {
-        widget.selectedLocation = returnedLocation;
-        locationName = address ?? "Unknown address";
-      });
-    }
-  },
-  child: Text("Add location"),
-),
-ElevatedButton(
-  onPressed: () {
-    if (_pdfFile != null && _pdfFile!.existsSync()) {
-      Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => _pdfFile!.readAsBytesSync(),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please save the PDF first.')),
-      );
-    }
-  },
-  child: Text("Open PDF"),
-),
+                          setState(() {
+                            widget.selectedLocation = returnedLocation;
+                            locationName = address ?? "Unknown address";
+                          });
+                        }
+                      },
+                      child: Text("Add location"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_pdfFile != null && _pdfFile!.existsSync()) {
+                          Printing.layoutPdf(
+                            onLayout: (PdfPageFormat format) async =>
+                                _pdfFile!.readAsBytesSync(),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Please save the PDF first.')),
+                          );
+                        }
+                      },
+                      child: Text("Open PDF"),
+                    ),
 
-              // if (widget.selectedLocation != null)
-              //   Text("Selected Location: Lat: ${widget.selectedLocation!.latitude}, Lng: ${widget.selectedLocation!.longitude}"),
-
+                    // if (widget.selectedLocation != null)
+                    //   Text("Selected Location: Lat: ${widget.selectedLocation!.latitude}, Lng: ${widget.selectedLocation!.longitude}"),
                   ],
                 ),
               ),

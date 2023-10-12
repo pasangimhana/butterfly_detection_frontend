@@ -42,6 +42,12 @@ class _ReminderScreenState extends State<ReminderScreen> {
   }
 }
 
+bool isValidExtension(String filePath) {
+  String ext = filePath.split('.').last;
+  return ext.toLowerCase() == 'jpg' || ext.toLowerCase() == 'png';
+}
+
+
   @override
   void initState() {
     super.initState();
@@ -134,13 +140,17 @@ class _ReminderScreenState extends State<ReminderScreen> {
 //test image validation
     try {
       XFile picture = await _controller!.takePicture();
-    if (isValidImage(File(picture.path))) {
-      setState(() {
-        imagePath = picture.path;
-      });
-    } else {
-      showSnackBar(isError: true, msg: 'The image seems to be corrupt. Please try another.');
-    }
+     if (isValidExtension(picture.path)) {
+        if (isValidImage(File(picture.path))) {
+          setState(() {
+            imagePath = picture.path;
+          });
+        } else {
+          showSnackBar(isError: true, msg: 'The image seems to be corrupt. Please try another.');
+        }
+      } else {
+        showSnackBar(isError: true, msg: 'Only JPG and PNG formats are accepted. Please try another.');
+      }
     } on CameraException catch (e) {
       print('Error taking picture: $e');
     }
@@ -155,14 +165,18 @@ class _ReminderScreenState extends State<ReminderScreen> {
     });
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-    if (isValidImage(File(pickedFile.path))) {
-      setState(() {
-        imagePath = pickedFile.path;
-      });
-    } else {
-      showSnackBar(isError: true, msg: 'The selected image seems to be corrupt. Please choose another.');
-    }
+     if (pickedFile != null) {
+      if (isValidExtension(pickedFile.path)) {
+        if (isValidImage(File(pickedFile.path))) {
+          setState(() {
+            imagePath = pickedFile.path;
+          });
+        } else {
+          showSnackBar(isError: true, msg: 'The selected image seems to be corrupt. Please choose another.');
+        }
+      } else {
+        showSnackBar(isError: true, msg: 'Only JPG and PNG formats are accepted. Please choose another.');
+      }
     }
   }
 
