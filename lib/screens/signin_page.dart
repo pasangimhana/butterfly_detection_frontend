@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodie/screens/signup.dart';
 import 'package:foodie/screens/remider_screen.dart';
+
 class AppColors {
   static const primaryColor = Colors.deepPurple;
 }
@@ -16,8 +17,16 @@ class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   final _conUserName = TextEditingController();
   final _conPassword = TextEditingController();
+  String _errorMessage = '';
 
   Future<void> _signInUser() async {
+    if (_conUserName.text.isEmpty || _conPassword.text.isEmpty) {
+      setState(() {
+        _errorMessage = "Email and password are required.";
+      });
+      return;
+    }
+
     final url = 'https://butterfly-detection.onrender.com/login';
 
     final response = await http.post(
@@ -44,19 +53,18 @@ class _SignInPageState extends State<SignInPage> {
     } else {
       final responseBody = json.decode(response.body);
       final errorMessage = responseBody['detail'];
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
+      setState(() {
+        _errorMessage = errorMessage;
+      });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Sign In'),
-        backgroundColor: AppColors.primaryColor, // using AppColors.primaryColor
+        backgroundColor: AppColors.primaryColor,
         centerTitle: true,
       ),
       body: Form(
@@ -92,9 +100,17 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   SizedBox(height: 30.0),
+
+                  // Error message display
+                  if (_errorMessage.isNotEmpty)
+                    Text(
+                      _errorMessage,
+                      style: TextStyle(color: Colors.red),
+                    ),
+
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.white,// using AppColors.primaryColor
+                      primary: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -128,7 +144,6 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   SizedBox(height: 50),
-                  // Image.asset('images/logo2.png', width: 100, height: 100),
                 ],
               ),
             ),

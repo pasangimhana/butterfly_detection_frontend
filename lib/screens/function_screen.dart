@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodie/common_widgets/main_button.dart';
 import 'package:foodie/constants.dart';
 import 'package:foodie/main_layout.dart';
+import 'package:foodie/screens/signin_page.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:foodie/api_service.dart';
@@ -28,6 +29,9 @@ class ButterflyScreen extends StatefulWidget {
   LatLng? selectedLocation;
 
   final String detected;
+
+
+
 
   @override
   _ButterflyScreenState createState() => _ButterflyScreenState();
@@ -246,10 +250,25 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return MainLayout(
-      title: 'Butterfly detection',
-      customBody: Container(
-        child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Butterfly detection'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+       
+ Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignInPage()),
+              );
+
+            },
+          ),
+        ],
+      ),
+      body: Container( // Changed 'customBody' to 'body'
+        child: Stack(
           children: [
             Expanded(
               child: SingleChildScrollView(
@@ -262,10 +281,8 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     if (currentDetected != null)
                       Image.network(butterflyImages[currentDetected] ?? ''),
-
                     Container(
                       width: size.width - 80,
                       margin: const EdgeInsets.only(top: 10),
@@ -275,7 +292,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: AppColors.primaryColor.withOpacity(0.3),
+                        
                       ),
                       child: Center(
                         child: Column(
@@ -286,7 +303,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
-                                color: AppColors.primaryColor,
+                               
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -295,7 +312,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                                 'Location:',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: AppColors.primaryColor,
+                                 
                                 ),
                               ),
                               SizedBox(height: 5),
@@ -303,7 +320,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                                 'Location: ${locationName ?? 'Fetching location...'}',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: AppColors.primaryColor,
+                                 
                                 ),
                               ),
                               const SizedBox(height: 20),
@@ -312,7 +329,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                               'Description:',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: AppColors.primaryColor,
+                               
                               ),
                             ),
                             SizedBox(height: 5),
@@ -320,7 +337,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                               getDescription(currentDetected ?? ''),
                               style: TextStyle(
                                 fontSize: 14,
-                                color: AppColors.primaryColor,
+                              
                               ),
                             ),
                             ElevatedButton(
@@ -389,9 +406,6 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                       },
                       child: Text("Open PDF"),
                     ),
-
-                    // if (widget.selectedLocation != null)
-                    //   Text("Selected Location: Lat: ${widget.selectedLocation!.latitude}, Lng: ${widget.selectedLocation!.longitude}"),
                   ],
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:foodie/screens/signin_page.dart'; // Import your login page
 
 class HistoryScreen extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Future<void> deleteHistory(int id) async {
     final response = await http.delete(Uri.parse('$apiUrl/$id'));
     if (response.statusCode == 200) {
-      fetchHistory();  // Refresh the list after deleting
+      fetchHistory(); // Refresh the list after deleting
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to delete history.')),
@@ -62,6 +63,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Butterfly Detection History'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              // Navigate to the login page when the logout button is clicked
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignInPage()),
+              );
+            },
+            child: Text(
+              'Logout',
+              style: TextStyle(color: const Color.fromARGB(255, 36, 34, 34)),
+            ),
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: historyList.length,
@@ -123,7 +139,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       Row(
                         children: [
                           Icon(Icons.location_pin, color: primaryColor),
-                          SizedBox(width: 5),
+                          SizedBox(width:5),
                           Expanded(
                             child: Text(
                               'Location: ${formatLocation(item['location'])}',
