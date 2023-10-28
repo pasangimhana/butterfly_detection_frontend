@@ -61,24 +61,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
     Color primaryColor = Colors.blue;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Butterfly Detection History'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              // Navigate to the login page when the logout button is clicked
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SignInPage()),
-              );
-            },
-            child: Text(
-              'Logout',
-              style: TextStyle(color: const Color.fromARGB(255, 36, 34, 34)),
-            ),
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text('Butterfly Detection History'),
+      //   actions: <Widget>[
+      //     TextButton(
+      //       onPressed: () {
+      //         // Navigate to the login page when the logout button is clicked
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(builder: (context) => SignInPage()),
+      //         );
+      //       },
+      //       child: Text(
+      //         'Logout',
+      //         style: TextStyle(color: const Color.fromARGB(255, 36, 34, 34)),
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: ListView.builder(
         itemCount: historyList.length,
         itemBuilder: (context, index) {

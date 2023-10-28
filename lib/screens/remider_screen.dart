@@ -295,16 +295,16 @@ bool isValidExtension(String filePath) {
                     const SizedBox(
                       height: 20,
                     ),
-                    MainButton(
-                      size: size,
-                      title: 'Prediction History',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HistoryScreen()), // or whatever the name of your prediction history screen class is
-                        );
-                      },
-                    ),
+                    // MainButton(
+                    //   size: size,
+                    //   title: 'Prediction History',
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context) => HistoryScreen()), // or whatever the name of your prediction history screen class is
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ),
