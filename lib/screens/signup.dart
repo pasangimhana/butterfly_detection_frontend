@@ -20,7 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _conCPassword = TextEditingController();
 
   Future<void> _registerUser() async {
-    final url = 'https://butterfly-detection.onrender.com/register'; // Adjust this to your FastAPI URL
+    final url = 'http://52.184.86.31/register'; // Adjust this to your FastAPI URL
 
     final response = await http.post(
       Uri.parse(url),
@@ -66,16 +66,17 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextFormField(
-                    controller: _conUserName,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.email),
-                      labelText: 'Email Address',
-                      hintText: 'Enter your email',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
+               TextFormField(
+  controller: _conUserName,
+  decoration: InputDecoration(
+    prefixIcon: Icon(Icons.email),
+    labelText: 'Email Address',
+    hintText: 'Enter your email',
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
                     ),
+                    
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty || !value.contains('@')) {
@@ -85,6 +86,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   SizedBox(height: 20.0),
+
                   TextFormField(
                     controller: _conPassword,
                     obscureText: true,
@@ -96,6 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
+                    
                     validator: (value) {
                       if (value == null || value.isEmpty || value.length < 6) {
                         return 'Password must be at least 6 characters long.';

@@ -19,42 +19,68 @@ class _SignInPageState extends State<SignInPage> {
   final _conPassword = TextEditingController();
   String _errorMessage = '';
 
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    if (!value.contains('@')) {
+      return 'Invalid email';
+    }
+    final emailRegex = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    return null;
+  }
+
   Future<void> _signInUser() async {
-    if (_conUserName.text.isEmpty || _conPassword.text.isEmpty) {
-      setState(() {
-        _errorMessage = "Email and password are required.";
-      });
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final url = 'https://butterfly-detection.onrender.com/login';
+    final url = 'http://52.184.86.31/login';
 
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'email': _conUserName.text,
-        'password': _conPassword.text,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login successful!')),
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'email': _conUserName.text,
+          'password': _conPassword.text,
+        }),
       );
 
-      // Navigate to ReminderScreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => ReminderScreen()),
-      );
-    } else {
-      final responseBody = json.decode(response.body);
-      final errorMessage = responseBody['detail'];
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login successful!')),
+        );
+
+        // Navigate to ReminderScreen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ReminderScreen()),
+        );
+      } else if (response.statusCode == 401) {
+        setState(() {
+          _errorMessage = "Email or password not valid";
+        });
+      } else {
+        setState(() {
+          _errorMessage = "Something went wrong. Please try again later.";
+        });
+      }
+    } catch (e) {
       setState(() {
-        _errorMessage = errorMessage;
+        _errorMessage = "Failed to connect. Please check your internet connection and try again.";
       });
     }
   }
@@ -86,6 +112,7 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                     ),
                     keyboardType: TextInputType.emailAddress,
+                    validator: _validateEmail,
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
@@ -98,19 +125,17 @@ class _SignInPageState extends State<SignInPage> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
+                    validator: _validatePassword,
                   ),
                   SizedBox(height: 30.0),
-
-                  // Error message display
                   if (_errorMessage.isNotEmpty)
                     Text(
                       _errorMessage,
                       style: TextStyle(color: Colors.red),
                     ),
-
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
+                      primary: AppColors.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -120,16 +145,12 @@ class _SignInPageState extends State<SignInPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    onPressed: () {
-                      // Implement sign-in functionality here
-                      _signInUser();
-                    },
-                    child: Text('Sign In'),
+                    onPressed: _signInUser,
+                    child: Text('Sign In', style: TextStyle(color: Colors.white)),
                   ),
                   SizedBox(height: 30),
                   GestureDetector(
                     onTap: () {
-                      // Navigate to Register Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => RegisterPage()),
@@ -138,7 +159,7 @@ class _SignInPageState extends State<SignInPage> {
                     child: Text(
                       "Don't have an account? Register",
                       style: TextStyle(
-                        color: Colors.blue,
+                        color: AppColors.primaryColor,
                         decoration: TextDecoration.underline,
                       ),
                     ),

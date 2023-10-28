@@ -185,6 +185,8 @@ bool isValidExtension(String filePath) {
     Size size = MediaQuery.of(context).size;
     return MainLayout(
       title: '',
+
+      
       customBody: Container(
         padding: EdgeInsets.only(top: 20),
         child: _isLoading
@@ -203,6 +205,7 @@ bool isValidExtension(String filePath) {
                 ),
               ),
             ),
+
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -210,8 +213,8 @@ bool isValidExtension(String filePath) {
                   children: [
                     Container(
                       margin: EdgeInsets.only(top: 25),
-                      width: size.width - 170,
-                      height: size.width - 170,
+                      width: size.width - 70,
+                      height: size.width - 100,
                       decoration: BoxDecoration(
                           color: AppColors.primaryColor,
                           borderRadius: BorderRadius.circular(
@@ -224,8 +227,8 @@ bool isValidExtension(String filePath) {
                           borderRadius: BorderRadius.circular(20),
                           child: Image.file(
                             File(imagePath!),
-                            width: 200,
-                            height: 200,
+                            width: 400,
+                            height: 400,
                             fit: BoxFit.cover,
                           ),
                         )

@@ -10,7 +10,7 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   List<dynamic> historyList = [];
-  final String apiUrl = 'https://butterfly-detection.onrender.com/history';
+  final String apiUrl = 'http://52.184.86.31/history';
 
   Future<void> fetchHistory() async {
     final response = await http.get(Uri.parse(apiUrl));
@@ -26,7 +26,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Future<void> deleteHistory(int id) async {
     final response = await http.delete(Uri.parse('$apiUrl/$id'));
     if (response.statusCode == 200) {
-      fetchHistory(); // Refresh the list after deleting
+      fetchHistory(); // Refresh the list after deleting 
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to delete history.')),

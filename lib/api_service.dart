@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 
 class ApiService {
   //static const String _baseUrl = "https://food-detection-nutrition-app.onrender.com";
-  static const String _baseUrl = "https://butterfly-detection.onrender.com"; // For Android emulator
+  static const String _baseUrl = "http://52.184.86.31"; // For Android emulator
   final Dio _dio = Dio();
 
   Future<Map<String, dynamic>> uploadImage(File image) async {

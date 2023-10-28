@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:foodie/common_widgets/main_button.dart';
 import 'package:foodie/constants.dart';
 import 'package:foodie/main_layout.dart';
-import 'package:foodie/screens/signin_page.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:foodie/api_service.dart';
@@ -19,6 +18,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 //import 'package:file_picker/file_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:foodie/screens/signin_page.dart';
 import 'dart:typed_data';
 
 class ButterflyScreen extends StatefulWidget {
@@ -29,9 +29,6 @@ class ButterflyScreen extends StatefulWidget {
   LatLng? selectedLocation;
 
   final String detected;
-
-
-
 
   @override
   _ButterflyScreenState createState() => _ButterflyScreenState();
@@ -45,15 +42,22 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
 
   final Map<String, String> butterflyImages = {
     'Common_Indian_Crow':
-        "https://th.bing.com/th/id/OIP.dkegJ5-d-WNNrBqwvPWHigHaFj?pid=ImgDet&rs=1",
-    'Crimson Rose':
-        "https://dmc.dilmahtea.com/web-space/dmc/butterflies/76546f9a641ede2beab506b96df1688d889e629a/148938871051024.png",
-    'Common Mormon':
-        "https://upload.wikimedia.org/wikipedia/commons/8/8d/Papilio_polytes_mating_in_Kadavoor.jpg",
-    'Common Mime Swallowtail':
+        "https://upload.wikimedia.org/wikipedia/commons/8/8d/Common_crow_%28Euploea_core_core%29_underside.jpg",
+    'Common_Jay':
+        "https://upload.wikimedia.org/wikipedia/commons/1/10/Common_Jay_%28Graphium_doson%29.jpg",
+    'Common_Mime_Swallowtail':
         "https://upload.wikimedia.org/wikipedia/commons/c/c7/Open_wing_position_of_Papilio_clytia%2C_Form_Dissimilis%2C_Linnaeus%2C_1758_%E2%80%93_Common_Mime_WLB.jpg",
-    'Ceylon Blue Glassy Tiger':
-        "https://upload.wikimedia.org/wikipedia/commons/6/63/Ceylon_Blue_Glassy_Tiger_Ideopsis_similis_%E7%90%89%E7%90%83%E6%B5%85%E8%91%B1%E6%96%91%28%E3%83%AA%E3%83%A5%E3%82%A6%E3%82%AD%E3%83%A5%E3%82%A6%E3%82%A2%E3%82%B5%E3%82%AE%E3%83%9E%E3%83%80%E3%83%A9%29.jpg",
+    'Common_Rose':
+        "https://upload.wikimedia.org/wikipedia/commons/3/39/Open_wing_position_of_Pachliopta_aristolochiae_Fabricius%2C_1775_%E2%80%93_Common_Rose.jpg",
+    'Cylon_Blue_Glass_Tiger':
+        "https://upload.wikimedia.org/wikipedia/commons/d/d9/RadenaVulgarisM_5_1.jpg",
+    'Great_eggfly':
+        "https://upload.wikimedia.org/wikipedia/commons/9/93/Hypolimnas_bolina_in_Japan.jpg",
+    'Lemon_Pansy':
+        "https://en.wikipedia.org/wiki/File:Junonia_lemonias_-_Lemon_Pansy_25.jpg",
+    'Tailed_Jay':
+        "https://upload.wikimedia.org/wikipedia/commons/1/1b/Graphium_agamemnon_20131222.jpg",
+   
   };
   String? currentDetected;
   loc.LocationData? currentLocation;
@@ -152,7 +156,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
   }
 
   Future<void> saveHistory(String location, String detectionClass) async {
-    final url = 'https://butterfly-detection.onrender.com/save-history';
+    final url = 'http://52.184.86.31/save-history';
 
     final response = await http.post(
       Uri.parse(url),
@@ -234,14 +238,28 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
   String getDescription(String butterflyName) {
     if (butterflyName == 'Common_Indian_Crow') {
       return 'Common Name: common indian crow,Scientific name: Euploea core,Family: Nymphalidae,Host Plant: Indian sarasaparilla (ඉරමුසු) ,  Bo Tree/ Bodhi Tree(බෝ), Wax Leaved Climber Indian ,Sarsaparilla  (වැල් රුක් අත්තන,කිරි වැල්)'; // Full description
-    } else if (butterflyName == 'Crimson Rose') {
-      return 'Scientific Name: Pachliopta aristolochiae,Family: Papilionidae,Host Plant: The Indian Birthwort (සප්සඳ),.'; // Full description
-    } else if (butterflyName == 'Common Mormon') {
-      return 'Scientific Name: Papilio polytes,Host Plant: Winged Naringi (තුම්පත් කුරුඳු) ,Curry Leaf Tree (කරපිංචා) , orangeberry/ gin berry (දොඩම් පනා)';
-    } else if (butterflyName == 'Common Mime Swallowtail') {
-      return 'Scientific Name: Papilio clytia,Host Plant:  Neolitsea cassia,  Litsea longifolia,'; // Full description
-    } else if (butterflyName == 'Ceylon Blue Glassy Tiger') {
-      return 'Scientific Name: Ideopsis similis,Host Plant:Tylophora indica.'; // Full description
+  
+    } else if (butterflyName == 'Common_Jay') {
+      return 'Common Name: Tailed Jay,Scientific name: Graphium agamemnon,Family: Host Plant: Polyalthia cerasoides, Annona muricata (soursop), Xylopia championii (අතු කැටිය/දත් කැටිය).'; // Full description
+   
+    } else if (butterflyName == 'Common_Mime_Swallowtail') {
+      return 'Scientific Name: Papilio clytia,Host Plant:  Neolitsea cassia,  Litsea longifolia';
+   
+    } else if (butterflyName == 'Common_Rose') {
+      return 'Scientific Name: Pachliopta aristolochiae,Family: Papilionidae,Host Plant: The Indian Birthwort (සප්සඳ)'; // Full description
+   
+    } else if (butterflyName == 'Cylon_Blue_Glass_Tiger') {
+      return 'Common Name: cylon blue glass tiger,Scientific Name: Ideopsis similis,Host Plant:Tylophora indica.';
+   
+      }else if (butterflyName == 'Great_eggfly') {
+      return 'Common Name: Great Eggfly,Scientific name: Hypolimnas bolina,Family: Nymphalidae,Host Plant: Common purslane'; 
+   
+       } else if (butterflyName == 'Lemon_Pansy') {
+      return 'Common Name: Lemon Pansy,Scientific name: Junonia lemonias,Host Plant: Barleria prionitis (Porcupine flower), Hygrophila schulli (Long leaved barleria Marsh Barbel), Lindernia rotundifolia (Baby Tears)';
+    
+      }else if (butterflyName == 'Tailed_Jayr') {
+      return 'Common Name: Tailed Jay,Scientific name: Graphium agamemnon,Host Plant: Polyalthia cerasoides, Annona muricata (soursop), Xylopia championii (අතු කැටිය/දත් කැටිය)'; 
+       // Full description
     } else {
       return '';
     }
@@ -250,25 +268,27 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    ThemeData theme = Theme.of(context);
+    Color primaryColor = theme.primaryColor;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Butterfly detection'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
+        title: Text('Butterfly Detection'),
+        actions: [
+          TextButton(
             onPressed: () {
-       
- Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SignInPage()),
               );
-
             },
+            child: Text('logout', style: TextStyle(color: Color.fromARGB(255, 92, 17, 17))),
           ),
         ],
       ),
-      body: Container( // Changed 'customBody' to 'body'
-        child: Stack(
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
@@ -276,15 +296,20 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                   children: [
                     Text(
                       widget.detected,
-                      style: const TextStyle(
-                        fontSize: 22,
+                      style: theme.textTheme.headline5?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const SizedBox(height: 10),
                     if (currentDetected != null)
-                      Image.network(butterflyImages[currentDetected] ?? ''),
+                      Image.network(
+                        butterflyImages[currentDetected] ?? '',
+                        width: size.width - 40,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
                     Container(
-                      width: size.width - 80,
+                      width: size.width,
                       margin: const EdgeInsets.only(top: 10),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -292,73 +317,76 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        
+                        color: primaryColor.withOpacity(0.1),
                       ),
-                      child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Butterfly information',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                               
-                              ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Butterfly information',
+                            style: theme.textTheme.subtitle1?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor,
                             ),
-                            const SizedBox(height: 10),
-                            if (currentLocation != null) ...[
-                              Text(
-                                'Location:',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                 
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                'Location: ${locationName ?? 'Fetching location...'}',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                 
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          if (currentLocation != null) ...[
                             Text(
-                              'Description:',
-                              style: TextStyle(
-                                fontSize: 14,
-                               
+                              'Location:',
+                              style: theme.textTheme.bodyText2?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: primaryColor,
                               ),
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Text(
-                              getDescription(currentDetected ?? ''),
-                              style: TextStyle(
-                                fontSize: 14,
-                              
+                              'Location: ${locationName ?? 'Fetching location...'}',
+                              style: theme.textTheme.bodyText2?.copyWith(
+                                color: primaryColor,
                               ),
                             ),
-                            ElevatedButton(
-                              onPressed: () {
-                                _saveAsPDF(
-                                    getDescription(currentDetected ?? ''));
-                              },
-                              child: Text("Save Description as PDF"),
-                            ),
-                            const SizedBox(height: 20),
-                            ...nutritionDetails.entries
-                                .map((e) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 2),
-                                      child: Text('${e.key}: ${e.value}',
-                                          style: TextStyle(fontSize: 16)),
-                                    ))
-                                .toList(),
                             const SizedBox(height: 20),
                           ],
-                        ),
+                          Text(
+                            'Description:',
+                            style: theme.textTheme.bodyText2?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: primaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            getDescription(currentDetected ?? ''),
+                            style: theme.textTheme.bodyText2?.copyWith(
+                              color: primaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              _saveAsPDF(
+                                getDescription(currentDetected ?? ''),
+                              );
+                            },
+                            child: Text("Save Description as PDF"),
+                            style: ElevatedButton.styleFrom(
+                              primary: primaryColor,
+                               onPrimary: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ...nutritionDetails.entries.map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Text(
+                                '${e.key}: ${e.value}',
+                                style: TextStyle(
+                                    fontSize: 16, color: primaryColor),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -367,6 +395,10 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                         saveHistory(locationName ?? '', currentDetected ?? '');
                       },
                       child: Text("Save History"),
+                      style: ElevatedButton.styleFrom(
+                        primary: primaryColor,
+                         onPrimary: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
@@ -389,6 +421,10 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                         }
                       },
                       child: Text("Add location"),
+                      style: ElevatedButton.styleFrom(
+                        primary: primaryColor,
+                         onPrimary: Colors.white,
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -400,11 +436,16 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('Please save the PDF first.')),
+                              content: Text('Please save the PDF first.'),
+                            ),
                           );
                         }
                       },
                       child: Text("Open PDF"),
+                      style: ElevatedButton.styleFrom(
+                        primary: primaryColor,
+                         onPrimary: Colors.white,
+                      ),
                     ),
                   ],
                 ),
