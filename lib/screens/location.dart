@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/screens/history_map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
  // Import the HistoryScreen file
@@ -88,7 +89,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ],
                 ),
-                child: HistoryScreen(),  // Add your HistoryScreen here
+                child: HistoryScreenUpdated(),  // Add your HistoryScreen here
               );
             },
           ),

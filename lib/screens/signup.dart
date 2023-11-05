@@ -3,6 +3,8 @@ import 'package:foodie/screens/signin_page.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../constants.dart';
+
 class AppColors {
   static const primaryColor = Colors.deepPurple;
   static const primaryColorOpacity = Color(0x664B0082);
@@ -20,7 +22,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final _conCPassword = TextEditingController();
 
   Future<void> _registerUser() async {
-    final url = 'http://52.184.86.31/register'; // Adjust this to your FastAPI URL
+    const url = '${URL.baseUrl}/register';
+
+    // final url = 'http://52.184.86.31/register'; // Adjust this to your FastAPI URL
 
     final response = await http.post(
       Uri.parse(url),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:foodie/screens/signin_page.dart'; // Import your login page
+import 'package:foodie/screens/signin_page.dart';
+
+import '../constants.dart'; // Import your login page
 
 class HistoryScreen extends StatefulWidget {
   @override
@@ -10,7 +12,8 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   List<dynamic> historyList = [];
-  final String apiUrl = 'http://52.184.86.31/history';
+  // final String apiUrl = 'http://52.184.86.31/history';
+  final String apiUrl = '${URL.baseUrl}/history';
 
   Future<void> fetchHistory() async {
     final response = await http.get(Uri.parse(apiUrl));

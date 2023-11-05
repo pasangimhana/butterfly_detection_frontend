@@ -3,9 +3,13 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 
+import 'constants.dart';
+
 class ApiService {
   //static const String _baseUrl = "https://food-detection-nutrition-app.onrender.com";
-  static const String _baseUrl = "http://52.184.86.31"; // For Android emulator
+
+  static const String _baseUrl = URL.baseUrl; // For Android emulator
+  // static const String _baseUrl = "http://52.184.86.31"; // For Android emulator
   final Dio _dio = Dio();
 
   Future<Map<String, dynamic>> uploadImage(File image) async {

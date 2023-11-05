@@ -57,6 +57,8 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
         "https://en.wikipedia.org/wiki/File:Junonia_lemonias_-_Lemon_Pansy_25.jpg",
     'Tailed_Jay':
         "https://upload.wikimedia.org/wikipedia/commons/1/1b/Graphium_agamemnon_20131222.jpg",
+    'Common Mormon':
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Papilio_polytes_mating_in_Kadavoor.jpg/1280px-Papilio_polytes_mating_in_Kadavoor.jpg",
    
   };
   String? currentDetected;
@@ -155,8 +157,9 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
     }
   }
 
-  Future<void> saveHistory(String location, String detectionClass) async {
-    final url = 'http://52.184.86.31/save-history';
+  Future<void> saveHistory(String location, String detectionClass, String latitude, String longitude) async {
+    // final url = 'http://52.184.86.31/save-history';
+    final url = '${URL.baseUrl}/save-history';
 
     final response = await http.post(
       Uri.parse(url),
@@ -166,6 +169,8 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
       body: json.encode({
         'location': location,
         'detection_class': detectionClass,
+        'latitude': latitude,
+        'longitude': longitude,
       }),
     );
 
@@ -236,6 +241,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
 //xml1=https://drive.google.com/file/d/1aTXT9j1VgM_ZxmQzaFhHdnSJecmgiuuj/view?usp=drive_link
 
   String getDescription(String butterflyName) {
+    print(butterflyName);
     if (butterflyName == 'Common_Indian_Crow') {
       return 'Common Name: common indian crow,Scientific name: Euploea core,Family: Nymphalidae,Host Plant: Indian sarasaparilla (ඉරමුසු) ,  Bo Tree/ Bodhi Tree(බෝ), Wax Leaved Climber Indian ,Sarsaparilla  (වැල් රුක් අත්තන,කිරි වැල්)'; // Full description
   
@@ -258,8 +264,11 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
       return 'Common Name: Lemon Pansy,Scientific name: Junonia lemonias,Host Plant: Barleria prionitis (Porcupine flower), Hygrophila schulli (Long leaved barleria Marsh Barbel), Lindernia rotundifolia (Baby Tears)';
     
       }else if (butterflyName == 'Tailed_Jayr') {
-      return 'Common Name: Tailed Jay,Scientific name: Graphium agamemnon,Host Plant: Polyalthia cerasoides, Annona muricata (soursop), Xylopia championii (අතු කැටිය/දත් කැටිය)'; 
-       // Full description
+      return 'Common Name: Tailed Jay,Scientific name: Graphium agamemnon,Host Plant: Polyalthia cerasoides, Annona muricata (soursop), Xylopia championii (අතු කැටිය/දත් කැටිය)';
+      // Full description
+    }
+    else if (butterflyName == "Common Mormon") {
+      return 'Common Name: Common Mormon,Scientific name: Papilio polytes,Family: Papilionidae,Host Plant: Citrus aurantifolia (lime), Citrus limon lemon)';
     } else {
       return '';
     }
@@ -392,7 +401,7 @@ class _ButterflyScreenState extends State<ButterflyScreen> {
                     const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
-                        saveHistory(locationName ?? '', currentDetected ?? '');
+                        saveHistory(locationName ?? '', currentDetected ?? '', currentLocation!.latitude.toString(), currentLocation!.longitude.toString());
                       },
                       child: Text("Save History"),
                       style: ElevatedButton.styleFrom(

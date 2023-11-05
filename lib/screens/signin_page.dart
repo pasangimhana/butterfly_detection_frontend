@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:foodie/screens/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodie/screens/signup.dart';
 import 'package:foodie/screens/remider_screen.dart';
+
+import '../constants.dart';
 
 class AppColors {
   static const primaryColor = Colors.deepPurple;
@@ -44,8 +47,16 @@ class _SignInPageState extends State<SignInPage> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+    // circular progress indicator
+    showDialog(
+      context: context,
+      builder: (context) => Center(child: CircularProgressIndicator()),
+    );
 
-    final url = 'http://52.184.86.31/login';
+    // import base url from constants.dart
+    const url = '${URL.baseUrl}/login';
+
+    // final url = 'http://52.184.86.31/login';
 
     try {
       final response = await http.post(
@@ -59,22 +70,27 @@ class _SignInPageState extends State<SignInPage> {
         }),
       );
 
+      Navigator.pop(context); // close the dialog
+
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login successful!')),
         );
 
+
         // Navigate to ReminderScreen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ReminderScreen()),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else if (response.statusCode == 401) {
         setState(() {
+          print("Some Error!!");
           _errorMessage = "Email or password not valid";
         });
       } else {
         setState(() {
+          print("Something went wrong. Please try again later.");
           _errorMessage = "Something went wrong. Please try again later.";
         });
       }

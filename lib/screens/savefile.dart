@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_split/flutter_split.dart';
-import 'location_screen.dart'; // Import your LocationScreen
-import 'history_screen.dart'; // Import your HistoryScreen
+import 'package:split_view/split_view.dart';
+import 'location.dart'; // Import your LocationScreen
+import 'prediction_history.dart'; // Import your HistoryScreen
 
 class MainScreen extends StatelessWidget {
   @override
@@ -20,3 +20,4 @@ class MainScreen extends StatelessWidget {
     );
   }
 }
+
